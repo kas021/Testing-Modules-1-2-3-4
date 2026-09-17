@@ -5,34 +5,52 @@
   "enabled": true,
   "publishedAtMs": 1789668169868,
   "bundle": {
-    "version": 1,
+    "version": 2,
     "minAppVersion": "8.0.0",
-    "packageUrl": "https://github.com/kas021/Testing-Modules-1-2-3-4/releases/download/bundle-1/Testing-Modules-1-2-3-4-Bundle-1.zip",
-    "packagePath": "/kas021/Testing-Modules-1-2-3-4/releases/download/bundle-1/Testing-Modules-1-2-3-4-Bundle-1.zip",
-    "sha256": "33488698d36bd7aa2bef2dac50c17f80fa078897c64b81ce5c7cb1e2e371427a",
+    "packageUrl": "https://github.com/kas021/Testing-Modules-1-2-3-4/releases/download/bundle-2/Testing-Modules-1-2-3-4-Bundle-2.zip",
+    "packagePath": "/kas021/Testing-Modules-1-2-3-4/releases/download/bundle-2/Testing-Modules-1-2-3-4-Bundle-2.zip",
+    "sha256": "9dc1313c769fb7269d57aac96e123606d4772b498c032739ec3c345d55445049",
     "signature": ""
   },
   "modules": [
     {
       "moduleId": "franime-v1",
       "moduleFamilyId": "franime_v1",
-      "moduleIdentity": "PENDING-OWNER-ALLOCATION",
-      "moduleIdentityNumber": 0,
+      "moduleIdentity": "SP-VID-9002-FRANIME-CODEX-TEST",
+      "moduleIdentityNumber": 9002,
       "contentType": "video",
-      "version": "1.0.0-beta.3",
+      "version": "1.0.0-beta.4",
       "minAppVersion": "8.0.0",
-      "packageUrl": "https://github.com/kas021/Testing-Modules-1-2-3-4/releases/download/module-franime-v1-v1.0.0-beta.3/FRAnime-1.0.0-beta.3.zip",
-      "packagePath": "/kas021/Testing-Modules-1-2-3-4/releases/download/module-franime-v1-v1.0.0-beta.3/FRAnime-1.0.0-beta.3.zip",
-      "sha256": "738489e47def3ef89b932935071ec36d1c3eac1bb193a88e6db8cc54c3092ab0",
+      "packageUrl": "https://github.com/kas021/Testing-Modules-1-2-3-4/releases/download/module-franime-v1-v1.0.0-beta.4/FRAnimeCodex-1.0.0-beta.4.zip",
+      "packagePath": "/kas021/Testing-Modules-1-2-3-4/releases/download/module-franime-v1-v1.0.0-beta.4/FRAnimeCodex-1.0.0-beta.4.zip",
+      "sha256": "18dbf899456654f4a79631ebaba0fc23f66250f98dbb1b6963033320aca54a6f",
       "signature": "",
       "publishedAtMs": 1789668169868,
       "changelog": [
-        "FRAnime (franime.fr) French anime catalogue — VOSTFR and VF",
-        "Search runs against the site's own title sitemap plus FRAnime top/calendar identities; every hit is verified through /anime-by-id before it is returned",
-        "Complete season and episode lists with per-episode VOSTFR / VF availability",
-        "Streams resolved per play: the site player route is decoded, then the provider page is resolved to a probed direct MP4 or HLS ladder, with the required headers kept together",
-        "Discovery V1: Top 15 hero + Top 10 + upcoming-episode calendar sections",
-        "Package verified with the workshop kit checker: 2/2 sampled stream routes passed"
+        "FRAnime Codex variant for side-by-side testing of the canonical Codex implementation",
+        "Positive community test identity 9002 fixes strict Player validation of development identity number 0",
+        "Exact season, episode, language, server, quality, subtitle and Discovery V1 handling retained",
+        "Package verified with the workshop kit checker and flat ZIP inspection"
+      ]
+    },
+    {
+      "moduleId": "franime-hermes-v1",
+      "moduleFamilyId": "franime_hermes_v1",
+      "moduleIdentity": "SP-VID-9003-FRANIME-HERMES-TEST",
+      "moduleIdentityNumber": 9003,
+      "contentType": "video",
+      "version": "1.0.0-beta.2",
+      "minAppVersion": "8.0.0",
+      "packageUrl": "https://github.com/kas021/Testing-Modules-1-2-3-4/releases/download/module-franime-hermes-v1-v1.0.0-beta.2/FRAnimeHermes-1.0.0-beta.2.zip",
+      "packagePath": "/kas021/Testing-Modules-1-2-3-4/releases/download/module-franime-hermes-v1-v1.0.0-beta.2/FRAnimeHermes-1.0.0-beta.2.zip",
+      "sha256": "1eed477e39dff1f66db2f0576ab8363092b0f5fd17370d61177249e5a5df3066",
+      "signature": "",
+      "publishedAtMs": 1789668169868,
+      "changelog": [
+        "FRAnime Hermes variant for side-by-side testing of the Hermes implementation",
+        "Distinct module id franime-hermes-v1 prevents collision with the Codex variant",
+        "Positive community test identity 9003 fixes strict Player validation of development identity number 0",
+        "Package verified with the workshop kit checker and flat ZIP inspection"
       ]
     }
   ],

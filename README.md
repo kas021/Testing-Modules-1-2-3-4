@@ -1,6 +1,6 @@
 # Testing Modules 1 2 3 4
 
-Public Synthetiq Player testing repository for user-installed modules.
+Public Synthetiq Player testing repository for two FRAnime implementations.
 
 ## Install in the app
 
@@ -11,30 +11,33 @@ https://raw.githubusercontent.com/kas021/Testing-Modules-1-2-3-4/main/repository
 ```
 
 Settings → Media & Sources → add/import a **repository URL** and paste that line.
-The app downloads `bundle-1`, installs every module inside it, and links the
+The app downloads `bundle-2`, installs both modules inside it, and links the
 repository so **Check** can offer later versions.
 
 **Option B — import the module ZIP directly** (single module, no repository link):
 
-<https://github.com/kas021/Testing-Modules-1-2-3-4/releases/download/module-franime-v1-v1.0.0-beta.3/FRAnime-1.0.0-beta.3.zip>
+- [FRAnime Codex 1.0.0-beta.4](https://github.com/kas021/Testing-Modules-1-2-3-4/releases/download/module-franime-v1-v1.0.0-beta.4/FRAnimeCodex-1.0.0-beta.4.zip)
+- [FRAnime Hermes 1.0.0-beta.2](https://github.com/kas021/Testing-Modules-1-2-3-4/releases/download/module-franime-hermes-v1-v1.0.0-beta.2/FRAnimeHermes-1.0.0-beta.2.zip)
 
 Download that file and import it under Settings → Media & Sources → the
 module/package import action. Import the **ZIP itself** — not this repository
 archive, not the extracted module folder, and not the bundle.
 
-## Current module
+## Current modules
 
-| Module | Version | ZIP | SHA-256 |
-| --- | --- | --- | --- |
-| `franime-v1` — FRAnime, video, contract v4, Discovery V1 | `1.0.0-beta.3` | [`FRAnime-1.0.0-beta.3.zip`](modules/Franime/dist/FRAnime-1.0.0-beta.3.zip) | `738489e47def3ef89b932935071ec36d1c3eac1bb193a88e6db8cc54c3092ab0` |
+| Variant | Module ID | Version | Identity number |
+| --- | --- | --- | ---: |
+| FRAnime Codex | `franime-v1` | `1.0.0-beta.4` | 9002 |
+| FRAnime Hermes | `franime-hermes-v1` | `1.0.0-beta.2` | 9003 |
 
-Bundle `1`: [`Testing-Modules-1-2-3-4-Bundle-1.zip`](bundles/Testing-Modules-1-2-3-4-Bundle-1.zip)
-— contains `modules/FRAnime-1.0.0-beta.3.zip`.
+Bundle `2`: [`Testing-Modules-1-2-3-4-Bundle-2.zip`](bundles/Testing-Modules-1-2-3-4-Bundle-2.zip)
+— contains both module ZIPs.
 
 `repository.json` is the index the app reads: bundle and module entries with
 their release URLs, SHA-256 digests and signature fields. `SHA256SUMS` records
-the same digests for manual checking. Source folder:
-[`modules/Franime/`](modules/Franime/).
+the same digests for manual checking. Source folders:
+[`modules/FranimeCodex/`](modules/FranimeCodex/) and
+[`modules/FranimeHermes/`](modules/FranimeHermes/).
 
 ## Trust / signature status
 
@@ -69,20 +72,21 @@ per module and 40 MB per bundle; the index must stay under 512 KB, and every
 
 ## Verification status
 
-The local kit report records 38 attempted checks: 34 passed, 0 failed, 4
-blocked/unverified. The blocked checks are provider availability and real app
-playback controls/audio verification; no Flutter/S2/device test was available.
-Read [`modules/Franime/test-report.md`](modules/Franime/test-report.md) for the
-full evidence and limitations. The published release assets were re-downloaded
-anonymously and their SHA-256 digests match `repository.json`.
+The Codex local kit report records 38 attempted checks: 34 passed, 0 failed, 4
+blocked/unverified. The Hermes report records the separate Hermes artifact
+checks. Provider availability and real app playback controls/audio verification
+remain separate checks. Read [`modules/FranimeCodex/test-report.md`](modules/FranimeCodex/test-report.md)
+and [`modules/FranimeHermes/test-report.md`](modules/FranimeHermes/test-report.md)
+for the evidence and limitations. The published release assets are validated
+against the SHA-256 digests in `repository.json`.
 
-The package is a beta testing artifact. Its identity remains
-`PENDING-OWNER-ALLOCATION` / `0`; this repository is not the official catalogue
-and does not claim maintainer approval.
+These are beta community-testing artifacts. Identity numbers 9002 and 9003 are
+test-only compatibility identities, not official catalogue allocations. This
+repository is not the official catalogue and does not claim maintainer approval.
 
-`FranimeHermes` was not copied because it is a duplicate implementation with the
-same module id. The kit's `examples/` folders are incomplete templates and are
-intentionally not published as importable modules.
+The historical `modules/Franime/` beta.3 package remains retained but is no
+longer advertised because it used development identity number `0`. The kit's
+`examples/` folders are incomplete templates and are not published as modules.
 
 Do not add credentials, cookies, signed media URLs, personal data, or remote
 executable scripts.

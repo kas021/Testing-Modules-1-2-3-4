@@ -3,19 +3,26 @@
   "repositoryId": "synthetiq-testing-modules-1234",
   "name": "Testing Modules 1 2 3 4",
   "enabled": true,
-  "bundleVersion": 1,
-  "bundleFile": "bundles/Testing-Modules-1-2-3-4-Bundle-1.zip",
+  "bundleVersion": 2,
+  "bundleFile": "bundles/Testing-Modules-1-2-3-4-Bundle-2.zip",
   "minAppVersion": "8.0.0",
   "modules": [
     {
-      "file": "modules/Franime/dist/FRAnime-1.0.0-beta.3.zip",
+      "file": "modules/FranimeCodex/dist/FRAnimeCodex-1.0.0-beta.4.zip",
       "changelog": [
-        "FRAnime (franime.fr) French anime catalogue — VOSTFR and VF",
-        "Search runs against the site's own title sitemap plus FRAnime top/calendar identities; every hit is verified through /anime-by-id before it is returned",
-        "Complete season and episode lists with per-episode VOSTFR / VF availability",
-        "Streams resolved per play: the site player route is decoded, then the provider page is resolved to a probed direct MP4 or HLS ladder, with the required headers kept together",
-        "Discovery V1: Top 15 hero + Top 10 + upcoming-episode calendar sections",
-        "Package verified with the workshop kit checker: 2/2 sampled stream routes passed"
+        "FRAnime Codex variant for side-by-side testing of the canonical Codex implementation",
+        "Positive community test identity 9002 fixes strict Player validation of development identity number 0",
+        "Exact season, episode, language, server, quality, subtitle and Discovery V1 handling retained",
+        "Package verified with the workshop kit checker and flat ZIP inspection"
+      ]
+    },
+    {
+      "file": "modules/FranimeHermes/dist/FRAnimeHermes-1.0.0-beta.2.zip",
+      "changelog": [
+        "FRAnime Hermes variant for side-by-side testing of the Hermes implementation",
+        "Distinct module id franime-hermes-v1 prevents collision with the Codex variant",
+        "Positive community test identity 9003 fixes strict Player validation of development identity number 0",
+        "Package verified with the workshop kit checker and flat ZIP inspection"
       ]
     }
   ]
