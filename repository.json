@@ -5,10 +5,10 @@
   "enabled": true,
   "publishedAtMs": 1789668169868,
   "bundle": {
-    "version": 3,
+    "version": 4,
     "minAppVersion": "8.0.0",
-    "packageUrl": "https://github.com/kas021/Testing-Modules-1-2-3-4/releases/download/bundle-3/Testing-Modules-1-2-3-4-Bundle-3.zip",
-    "packagePath": "/kas021/Testing-Modules-1-2-3-4/releases/download/bundle-3/Testing-Modules-1-2-3-4-Bundle-3.zip",
+    "packageUrl": "https://github.com/kas021/Testing-Modules-1-2-3-4/releases/download/bundle-4/Testing-Modules-1-2-3-4-Bundle-4.zip",
+    "packagePath": "/kas021/Testing-Modules-1-2-3-4/releases/download/bundle-4/Testing-Modules-1-2-3-4-Bundle-4.zip",
     "sha256": "8465c30e4099dda5293ed09f2a43e4d8d49eb6faa77be670e391a8bf0a151c7c",
     "signature": ""
   },

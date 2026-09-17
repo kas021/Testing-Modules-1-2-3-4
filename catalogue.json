@@ -3,12 +3,12 @@
   "repositoryId": "synthetiq-testing-modules-1234",
   "name": "Testing Modules 1 2 3 4",
   "enabled": true,
-  "bundleVersion": 3,
-  "bundleFile": "bundles/Testing-Modules-1-2-3-4-Bundle-3.zip",
+  "bundleVersion": 4,
+  "bundleFile": "bundles/Testing-Modules-1-2-3-4-Bundle-4.zip",
   "minAppVersion": "8.0.0",
   "modules": [
     {
-      "file": "modules/FranimeCodex/dist/FRAnimeCodex-1.0.0-beta.5.zip",
+      "file": "modules/FranimeCodexBeta5/dist/FRAnimeCodex-1.0.0-beta.5.zip",
       "changelog": [
         "Fix Flutter response-shape handling for parsed JSON and string-valued text/body responses",
         "Resolve temporary media redirects before returning streams and keep the required headers paired",
@@ -17,7 +17,7 @@
       ]
     },
     {
-      "file": "modules/FranimeHermes/dist/FRAnimeHermes-1.0.0-beta.3.zip",
+      "file": "modules/FranimeHermesBeta3/dist/FRAnimeHermes-1.0.0-beta.3.zip",
       "changelog": [
         "Fix Flutter response-shape handling for parsed JSON and string-valued text/body responses",
         "Resolve Sibnet and other temporary media redirects before returning streams",

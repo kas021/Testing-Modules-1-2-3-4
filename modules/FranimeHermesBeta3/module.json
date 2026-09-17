@@ -1,0 +1,45 @@
+{
+  "id": "franime-hermes-v1",
+  "name": "FRAnime Hermes",
+  "contentType": "video",
+  "contractVersion": 4,
+  "moduleVersion": "1.0.0-beta.3",
+  "description": "FRAnime anime catalogue with exact season and episode identity, live-action season filtering, and direct public-reader media resolution (Hermes test variant).",
+  "moduleFamilyId": "franime_hermes_v1",
+  "moduleIdentity": "SP-VID-9003-FRANIME-HERMES-TEST",
+  "moduleIdentityNumber": 9003,
+  "releaseTrack": "beta",
+  "moduleStatus": "trial",
+  "presentation": {
+    "category": "Anime",
+    "purpose": "French anime catalogue — Hermes test variant",
+    "recommended": false,
+    "language": "French",
+    "languages": [
+      "sub",
+      "dub"
+    ],
+    "iconUrl": "https://franime.fr/logo.png"
+  },
+  "config": {
+    "capabilities": {
+      "discovery_v1": true
+    },
+    "runtime": {
+      "entry": "index.js",
+      "mode": "local"
+    },
+    "caps": {
+      "homeMaxResults": 40,
+      "maxResponseBytes": 5242880,
+      "timeoutMs": 30000,
+      "maxConcurrentRequests": 4
+    },
+    "baseUrl": "https://franime.fr",
+    "streamHeaders": {
+      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36",
+      "Referer": "https://franime.fr/",
+      "Accept-Language": "fr-FR,fr;q=0.9,en;q=0.8"
+    }
+  }
+}

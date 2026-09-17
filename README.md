@@ -30,14 +30,14 @@ archive, not the extracted module folder, and not the bundle.
 | FRAnime Codex | `franime-v1` | `1.0.0-beta.5` | 9002 |
 | FRAnime Hermes | `franime-hermes-v1` | `1.0.0-beta.3` | 9003 |
 
-Bundle `3`: [`Testing-Modules-1-2-3-4-Bundle-3.zip`](bundles/Testing-Modules-1-2-3-4-Bundle-3.zip)
+Bundle `4`: [`Testing-Modules-1-2-3-4-Bundle-4.zip`](bundles/Testing-Modules-1-2-3-4-Bundle-4.zip)
 — contains both module ZIPs.
 
 `repository.json` is the index the app reads: bundle and module entries with
 their release URLs, SHA-256 digests and signature fields. `SHA256SUMS` records
 the same digests for manual checking. Source folders:
-[`modules/FranimeCodex/`](modules/FranimeCodex/) and
-[`modules/FranimeHermes/`](modules/FranimeHermes/).
+[`modules/FranimeCodexBeta5/`](modules/FranimeCodexBeta5/) and
+[`modules/FranimeHermesBeta3/`](modules/FranimeHermesBeta3/).
 
 ## Trust / signature status
 
@@ -75,8 +75,8 @@ per module and 40 MB per bundle; the index must stay under 512 KB, and every
 The Codex local kit report records 38 attempted checks: 34 passed, 0 failed, 4
 blocked/unverified. The Hermes report records the separate Hermes artifact
 checks. Provider availability and real app playback controls/audio verification
-remain separate checks. Read [`modules/FranimeCodex/test-report.md`](modules/FranimeCodex/test-report.md)
-and [`modules/FranimeHermes/test-report.md`](modules/FranimeHermes/test-report.md)
+remain separate checks. Read [`modules/FranimeCodexBeta5/test-report.md`](modules/FranimeCodexBeta5/test-report.md)
+and [`modules/FranimeHermesBeta3/test-report.md`](modules/FranimeHermesBeta3/test-report.md)
 for the evidence and limitations. The published release assets are validated
 against the SHA-256 digests in `repository.json`.
 
