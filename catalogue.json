@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "repositoryId": "synthetiq-testing-modules-1234",
+  "name": "Testing Modules 1 2 3 4",
+  "enabled": true,
+  "bundleVersion": 1,
+  "bundleFile": "bundles/Testing-Modules-1-2-3-4-Bundle-1.zip",
+  "minAppVersion": "8.0.0",
+  "modules": [
+    {
+      "file": "modules/Franime/dist/FRAnime-1.0.0-beta.3.zip",
+      "changelog": [
+        "FRAnime (franime.fr) French anime catalogue — VOSTFR and VF",
+        "Search runs against the site's own title sitemap plus FRAnime top/calendar identities; every hit is verified through /anime-by-id before it is returned",
+        "Complete season and episode lists with per-episode VOSTFR / VF availability",
+        "Streams resolved per play: the site player route is decoded, then the provider page is resolved to a probed direct MP4 or HLS ladder, with the required headers kept together",
+        "Discovery V1: Top 15 hero + Top 10 + upcoming-episode calendar sections",
+        "Package verified with the workshop kit checker: 2/2 sampled stream routes passed"
+      ]
+    }
+  ]
+}

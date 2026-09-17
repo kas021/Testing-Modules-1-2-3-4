@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "repositoryId": "synthetiq-testing-modules-1234",
+  "name": "Testing Modules 1 2 3 4",
+  "enabled": true,
+  "publishedAtMs": 1789668169868,
+  "bundle": {
+    "version": 1,
+    "minAppVersion": "8.0.0",
+    "packageUrl": "https://github.com/kas021/Testing-Modules-1-2-3-4/releases/download/bundle-1/Testing-Modules-1-2-3-4-Bundle-1.zip",
+    "packagePath": "/kas021/Testing-Modules-1-2-3-4/releases/download/bundle-1/Testing-Modules-1-2-3-4-Bundle-1.zip",
+    "sha256": "33488698d36bd7aa2bef2dac50c17f80fa078897c64b81ce5c7cb1e2e371427a",
+    "signature": ""
+  },
+  "modules": [
+    {
+      "moduleId": "franime-v1",
+      "moduleFamilyId": "franime_v1",
+      "moduleIdentity": "PENDING-OWNER-ALLOCATION",
+      "moduleIdentityNumber": 0,
+      "contentType": "video",
+      "version": "1.0.0-beta.3",
+      "minAppVersion": "8.0.0",
+      "packageUrl": "https://github.com/kas021/Testing-Modules-1-2-3-4/releases/download/module-franime-v1-v1.0.0-beta.3/FRAnime-1.0.0-beta.3.zip",
+      "packagePath": "/kas021/Testing-Modules-1-2-3-4/releases/download/module-franime-v1-v1.0.0-beta.3/FRAnime-1.0.0-beta.3.zip",
+      "sha256": "738489e47def3ef89b932935071ec36d1c3eac1bb193a88e6db8cc54c3092ab0",
+      "signature": "",
+      "publishedAtMs": 1789668169868,
+      "changelog": [
+        "FRAnime (franime.fr) French anime catalogue — VOSTFR and VF",
+        "Search runs against the site's own title sitemap plus FRAnime top/calendar identities; every hit is verified through /anime-by-id before it is returned",
+        "Complete season and episode lists with per-episode VOSTFR / VF availability",
+        "Streams resolved per play: the site player route is decoded, then the provider page is resolved to a probed direct MP4 or HLS ladder, with the required headers kept together",
+        "Discovery V1: Top 15 hero + Top 10 + upcoming-episode calendar sections",
+        "Package verified with the workshop kit checker: 2/2 sampled stream routes passed"
+      ]
+    }
+  ],
+  "signature": ""
+}

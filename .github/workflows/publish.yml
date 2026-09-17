@@ -1,0 +1,62 @@
+name: Validate and publish catalogue
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: module-catalogue-publish
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Reject changed immutable packages
+        if: github.event.before != '0000000000000000000000000000000000000000'
+        run: |
+          changed="$(git diff --name-only "${{ github.event.before }}" "${{ github.sha }}" -- modules bundles || true)"
+          for file in $changed; do
+            if git cat-file -e "${{ github.event.before }}:$file" 2>/dev/null; then
+              echo "Immutable package was modified: $file"
+              exit 1
+            fi
+          done
+      - name: Generate and validate index
+        env:
+          # Optional: add this repository secret to publish a *trusted* signed
+          # index. Without it the index is written unsigned and the app treats
+          # this repository as a community repository.
+          MODULE_REPOSITORY_SIGNING_JWK: ${{ secrets.MODULE_REPOSITORY_SIGNING_JWK }}
+        run: node scripts/build_repository.mjs
+      - name: Publish immutable versioned release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/publish_releases.mjs
+      - name: Publish index to the default branch
+        run: |
+          if git diff --quiet -- repository.json SHA256SUMS && \
+            git ls-files --error-unmatch repository.json SHA256SUMS >/dev/null 2>&1; then
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add repository.json SHA256SUMS
+          git commit -m "Publish module catalogue [skip ci]"
+          git push
+      - uses: actions/upload-artifact@v4
+        with:
+          name: module-catalogue
+          path: |
+            repository.json
+            SHA256SUMS
