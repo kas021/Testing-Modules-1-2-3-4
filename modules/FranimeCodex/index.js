@@ -139,12 +139,31 @@
 
   /* ------------------------------------------------------------------ http */
 
+  /* The Flutter bridge has shipped both method-valued and string-valued body
+   * fields. JSON endpoints can also expose parsed data while their text body
+   * is empty, so callers must try every supported representation. */
+  async function responseText(res) {
+    var values = [];
+    if (res) {
+      if (typeof res.body === 'function') { try { values.push(await res.body()); } catch (_) {} }
+      else if (res.body != null) values.push(res.body);
+      if (typeof res.text === 'function') { try { values.push(await res.text()); } catch (_) {} }
+      else if (res.text != null) values.push(res.text);
+    }
+    var fallback = '';
+    for (var i = 0; i < values.length; i++) {
+      if (typeof values[i] !== 'string') continue;
+      var value = String(values[i]);
+      if (!fallback) fallback = value;
+      if (value) return value;
+    }
+    return fallback;
+  }
+
   async function requestText(url, headers, timeoutMs) {
     var res = await fetchv2(url, headers || {}, 'GET', null, { timeoutMs: timeoutMs });
     var status = Number(res && (res.status || res.statusCode)) || 0;
-    var text = '';
-    if (res && typeof res.text === 'function') text = await res.text();
-    else if (res && typeof res.body === 'string') text = res.body;
+    var text = await responseText(res);
     return { status: status, text: String(text == null ? '' : text), headers: (res && res.headers) || {} };
   }
 
@@ -154,9 +173,10 @@
     var data = null;
     if (res && typeof res.json === 'function') { try { data = await res.json(); } catch (_) {} }
     else if (res && res.json != null) data = res.json;
-    if (data == null && res && typeof res.body === 'string' && res.body) { try { data = JSON.parse(res.body); } catch (_) {} }
-    if (data == null && res && typeof res.text === 'function') {
-      var t = await res.text();
+    if (typeof data === 'string') { try { data = JSON.parse(data); } catch (_) {} }
+    if (data == null && res && res.body && typeof res.body === 'object' && typeof res.body !== 'function') data = res.body;
+    if (data == null) {
+      var t = await responseText(res);
       if (t && String(t).trim()) { try { data = JSON.parse(String(t)); } catch (_) {} }
     }
     return { status: status, data: data };
@@ -198,8 +218,7 @@
         continue;
       }
       ctype = String(rh['content-type'] || rh['Content-Type'] || '');
-      if (res && typeof res.text === 'function') body = await res.text();
-      else if (res && typeof res.body === 'string') body = res.body;
+      body = await responseText(res);
       break;
     }
     if (status >= 300 && status < 400) return { ok: false, reason: 'too many redirects' };
@@ -499,6 +518,10 @@
 
   /* ----------------------------------------------------------------- details */
 
+  function isExcludedSeason(season) {
+    return /\blive[\s-]*action\b/i.test(clean(season && season.title || ''));
+  }
+
   async function extractDetails(urlOrId) {
     var deadline = now() + 15000;
     var id = idFrom(urlOrId);
@@ -507,9 +530,13 @@
     if (got.status === 404) throw new Error('Franime details: unknown anime id ' + id);
     if (got.status !== 200) throw new Error('Franime details HTTP ' + got.status + ' for id ' + id);
     var a = got.anime;
-    var seasonCount = Array.isArray(a.saisons) ? a.saisons.length : 0;
+    var seasonCount = 0;
     var episodeCount = 0;
-    if (Array.isArray(a.saisons)) for (var i = 0; i < a.saisons.length; i++) episodeCount += (a.saisons[i].episodes || []).length;
+    if (Array.isArray(a.saisons)) for (var i = 0; i < a.saisons.length; i++) {
+      if (isExcludedSeason(a.saisons[i])) continue;
+      seasonCount++;
+      episodeCount += (a.saisons[i].episodes || []).length;
+    }
     var href = seriesHref(a);
     return {
       id: String(a.id),
@@ -574,6 +601,7 @@
     var slug = (seriesHref(anime).match(/\/anime\/([^?]+)/) || [])[1] || 'anime';
     for (var si = 0; si < saisons.length; si++) {
       var s = saisons[si] || {};
+      if (isExcludedSeason(s)) continue;
       var snum = seasonNumber(s.title, si);
       var eps = Array.isArray(s.episodes) ? s.episodes : [];
       var niceEpisodes = [];

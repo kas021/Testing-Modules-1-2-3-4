@@ -3,26 +3,26 @@
   "repositoryId": "synthetiq-testing-modules-1234",
   "name": "Testing Modules 1 2 3 4",
   "enabled": true,
-  "bundleVersion": 2,
-  "bundleFile": "bundles/Testing-Modules-1-2-3-4-Bundle-2.zip",
+  "bundleVersion": 3,
+  "bundleFile": "bundles/Testing-Modules-1-2-3-4-Bundle-3.zip",
   "minAppVersion": "8.0.0",
   "modules": [
     {
-      "file": "modules/FranimeCodex/dist/FRAnimeCodex-1.0.0-beta.4.zip",
+      "file": "modules/FranimeCodex/dist/FRAnimeCodex-1.0.0-beta.5.zip",
       "changelog": [
-        "FRAnime Codex variant for side-by-side testing of the canonical Codex implementation",
-        "Positive community test identity 9002 fixes strict Player validation of development identity number 0",
-        "Exact season, episode, language, server, quality, subtitle and Discovery V1 handling retained",
-        "Package verified with the workshop kit checker and flat ZIP inspection"
+        "Fix Flutter response-shape handling for parsed JSON and string-valued text/body responses",
+        "Resolve temporary media redirects before returning streams and keep the required headers paired",
+        "Exclude FRAnime seasons explicitly labeled Live Action so One Piece starts at the real anime S1E1",
+        "Package verified with the workshop kit checker, live source checks and flat ZIP inspection"
       ]
     },
     {
-      "file": "modules/FranimeHermes/dist/FRAnimeHermes-1.0.0-beta.2.zip",
+      "file": "modules/FranimeHermes/dist/FRAnimeHermes-1.0.0-beta.3.zip",
       "changelog": [
-        "FRAnime Hermes variant for side-by-side testing of the Hermes implementation",
-        "Distinct module id franime-hermes-v1 prevents collision with the Codex variant",
-        "Positive community test identity 9003 fixes strict Player validation of development identity number 0",
-        "Package verified with the workshop kit checker and flat ZIP inspection"
+        "Fix Flutter response-shape handling for parsed JSON and string-valued text/body responses",
+        "Resolve Sibnet and other temporary media redirects before returning streams",
+        "Exclude FRAnime seasons explicitly labeled Live Action so One Piece starts at the real anime S1E1",
+        "Package verified with the workshop kit checker, live source checks and flat ZIP inspection"
       ]
     }
   ]

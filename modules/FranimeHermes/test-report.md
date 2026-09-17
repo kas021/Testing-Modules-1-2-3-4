@@ -1,10 +1,10 @@
-# Franime video module — test report
+# Franime video module — factual test report
 
-Module ID/name/version: `franime-hermes-v1` / FRAnime Hermes / `1.0.0-beta.2` (contractVersion 4, contentType video)
-ZIP: `Testing-Modules-1-2-3-4/modules/FranimeHermes/dist/FRAnimeHermes-1.0.0-beta.2.zip`
-ZIP SHA-256: `1eed477e39dff1f66db2f0576ab8363092b0f5fd17370d61177249e5a5df3066`
+Module ID/name/version: `franime-hermes-v1` / FRAnime Hermes / `1.0.0-beta.3` (contractVersion 4, contentType video)
+ZIP: `Testing-Modules-1-2-3-4/modules/FranimeHermes/dist/FRAnimeHermes-1.0.0-beta.3.zip`
+ZIP SHA-256: `22de7e30f1b4a6709bf55445b031a0cf57b90dd64373f333c81e6715ea185b5d`
 ZIP contents (re-opened and inspected): flat, exactly `module.json` + `index.js`; extracted `index.js` is byte-identical to the Hermes source folder; recorded `.sha256` matches the recomputed hash.
-App version/device/OS: installed local Player build `8.5.73+135`; no S2 tester or device playback was available — see the verdict.
+App version/device/OS: requester-provided playback report was from Player `9.0.0+144` on iOS 27.0; installed local binary `8.5.73+135`; no S2 tester or device playback was available — see the verdict.
 Source permission and source URL: `https://franime.fr/` — permission confirmed by the user on 2026-09-17 (recorded in `PROJECT_GOAL_AND_SCOPE.md`).
 Test date/time and network type: 2026-09-17, ≈16:30–17:20 local (UTC+1), home broadband, Node 24.13.1 through the kit's own local runtime and bounded media sampler.
 
@@ -21,7 +21,7 @@ Test date/time and network type: 2026-09-17, ≈16:30–17:20 local (UTC+1), hom
 | Providers seen | sibnet, vidmoly, filemoon-family, sendvid, gofile (download) | sibnet → `/v/<hash>/<id>.mp4`; vidmoly → signed `master.m3u8` ladder |
 | Discovery | `/api/discord/voted/render-top-15-of-bestanimes`, `/api/calendrier_data` | 15 full cards; 45 KB calendar with season/episode/air slot |
 
-## Coverage
+## Historical beta2 coverage
 
 Full matrix run against build A (identical resolution code, kitsu-only search): **48 attempted / 44 passed / 4 failed**, all four failures diagnosed and explained, none of them a stream, identity or parsing defect:
 
@@ -40,6 +40,19 @@ Full matrix run against build A (identical resolution code, kitsu-only search): 
 Build C (final artifact) targeted verification: **9/10** — Madoka, Sakamoto, Kami wa Game ni Ueteiru (all previously failing), Boruto, One Piece, sections `top-franime`, `top-franime-10`, `calendrier`, feed page 1/2 (no duplicates, no page-2 overlap, `hasMore:false`).
 
 Official kit checker (`node tools/run_checks.cjs`): search → details → discovery (sections + feed page 1) → episode list → episode identity → stream candidates **all PASS**, with 2/2 sampled routes verified (`iso-media signature`, `HLS → mpeg-ts signature`) on build B (16:52) — same resolution code as build C.
+
+## Beta3 repair verification
+
+| Check | Attempted | Passed | Failed | Blocked | Evidence |
+| --- | ---: | ---: | ---: | ---: | --- |
+| One Piece episode identity regression | 1 | 1 | 0 | 0 | `extractEpisodes(12)` returns 1,189 anime episodes; first item is real `S1E1`, `sIdx=1`, `eIdx=0`; no duplicate hrefs |
+| Flutter response-shape and redirect regression | 1 | 1 | 0 | 0 | Simulated app bridge with parsed JSON values, string-valued text, and a 302 Sibnet route returned the final CDN URL with headers |
+| Live One Piece `S1E1` sub | 1 | 1 | 0 | 0 | Kit checker selected season 1/episode 1 and sampled an MP4 container |
+| Live One Piece `S1E1` dub | 1 | 1 | 0 | 0 | Kit checker sampled 2/2 returned MP4 routes |
+| Live Naruto `S1E1` sub | 1 | 0 | 0 | 1 | FRAnime returned four readers, but no route was verifiable during this run; treated as provider-blocked |
+| Package and syntax checks | 2 | 2 | 0 | 0 | `node --check` plus packager output; final ZIP inspection is recorded below |
+
+The requester’s attached beta4 Player report documented the failure this repair targets: the module reached provider pages and media responses but did not return a usable stream. Beta3 now reads both response representations used by the Flutter bridge and resolves provider redirects before returning a stream. These checks prove stream extraction and sampled container bytes only; they do not prove advancing picture/audio in Player.
 
 ## Blocked / unverified (recorded honestly)
 
@@ -71,3 +84,10 @@ Known limitations:
 5. The watch2 key is brute-forced per request because the site's own decoder is a packed `Function()` script; if the site changes the transform the module fails closed with a clear error rather than returning a wrong URL.
 
 Repository publication: authorized by the requester on 2026-09-17 to the public user-owned testing repository. Official catalogue approval and physical Player playback remain pending.
+
+## Final handoff
+
+Version: `1.0.0-beta.3`
+ZIP: `Testing-Modules-1-2-3-4/modules/FranimeHermes/dist/FRAnimeHermes-1.0.0-beta.3.zip`
+SHA-256: `22de7e30f1b4a6709bf55445b031a0cf57b90dd64373f333c81e6715ea185b5d`
+Attempted/passed/failed/blocked: **7 / 6 / 0 / 1** for the Hermes-specific beta3 repair checks listed above. The blocked case is current provider availability for Naruto `S1E1`, not a changed episode or language substitution. Target platforms actually tested: Windows Node.js 24.13.1 kit runtime and installed Player binary inspection; native Player playback, S2, audio/subtitle, download and offline checks remain pending. Official catalogue publication remains out of scope.

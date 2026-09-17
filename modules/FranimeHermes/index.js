@@ -141,12 +141,31 @@
 
   /* ------------------------------------------------------------------ http */
 
+  /* The Flutter bridge has shipped both method-valued and string-valued body
+   * fields. JSON endpoints can also expose parsed data while their text body
+   * is empty, so callers must try every supported representation. */
+  async function responseText(res) {
+    var values = [];
+    if (res) {
+      if (typeof res.body === 'function') { try { values.push(await res.body()); } catch (_) {} }
+      else if (res.body != null) values.push(res.body);
+      if (typeof res.text === 'function') { try { values.push(await res.text()); } catch (_) {} }
+      else if (res.text != null) values.push(res.text);
+    }
+    var fallback = '';
+    for (var i = 0; i < values.length; i++) {
+      if (typeof values[i] !== 'string') continue;
+      var value = String(values[i]);
+      if (!fallback) fallback = value;
+      if (value) return value;
+    }
+    return fallback;
+  }
+
   async function requestText(url, headers, timeoutMs) {
     var res = await fetchv2(url, headers || {}, 'GET', null, { timeoutMs: timeoutMs });
     var status = Number(res && (res.status || res.statusCode)) || 0;
-    var text = '';
-    if (res && typeof res.text === 'function') text = await res.text();
-    else if (res && typeof res.body === 'string') text = res.body;
+    var text = await responseText(res);
     return { status: status, text: String(text == null ? '' : text), headers: (res && res.headers) || {} };
   }
 
@@ -156,9 +175,10 @@
     var data = null;
     if (res && typeof res.json === 'function') { try { data = await res.json(); } catch (_) {} }
     else if (res && res.json != null) data = res.json;
-    if (data == null && res && typeof res.body === 'string' && res.body) { try { data = JSON.parse(res.body); } catch (_) {} }
-    if (data == null && res && typeof res.text === 'function') {
-      var t = await res.text();
+    if (typeof data === 'string') { try { data = JSON.parse(data); } catch (_) {} }
+    if (data == null && res && res.body && typeof res.body === 'object' && typeof res.body !== 'function') data = res.body;
+    if (data == null) {
+      var t = await responseText(res);
       if (t && String(t).trim()) { try { data = JSON.parse(String(t)); } catch (_) {} }
     }
     return { status: status, data: data };
@@ -182,28 +202,46 @@
   }
 
   async function probeMedia(url, headers, timeoutMs) {
-    var res = await fetchv2(url, Object.assign({ 'User-Agent': UA, Range: 'bytes=0-1023' }, headers || {}), 'GET', null, { timeoutMs: timeoutMs });
-    var status = Number(res && (res.status || res.statusCode)) || 0;
-    var ctype = String((res && res.headers && (res.headers['content-type'] || res.headers['Content-Type'])) || '');
+    var current = String(url || '');
+    var requestHeaders = Object.assign({ 'User-Agent': UA, Range: 'bytes=0-1023' }, headers || {});
+    var res = null;
+    var status = 0;
+    var ctype = '';
     var body = '';
-    if (res && typeof res.text === 'function') body = await res.text();
-    else if (res && typeof res.body === 'string') body = res.body;
+    for (var hop = 0; hop < 3; hop++) {
+      /* Do not hand a tier-1 routing URL to Player. Resolve each redirect here
+       * while the embed Referer is still under module control. */
+      res = await fetchv2(current, requestHeaders, 'GET', null, { timeoutMs: timeoutMs, followRedirects: false });
+      status = Number(res && (res.status || res.statusCode)) || 0;
+      var rh = (res && res.headers) || {};
+      var loc = rh.location || rh.Location || '';
+      if (status >= 300 && status < 400 && loc) {
+        var next = absolute(String(loc), current);
+        if (!next || next === current) return { ok: false, reason: 'redirect loop' };
+        current = next;
+        continue;
+      }
+      ctype = String(rh['content-type'] || rh['Content-Type'] || '');
+      body = await responseText(res);
+      break;
+    }
+    if (status >= 300 && status < 400) return { ok: false, reason: 'too many redirects' };
     if (!(status === 200 || status === 206)) return { ok: false, reason: 'HTTP ' + status };
     var head = String(body || '').slice(0, 1024);
     var trimmed = head.replace(/^\uFEFF/, '').trim();
     if (trimmed.indexOf('#EXTM3U') === 0) {
-      return { ok: true, type: /#EXT-X-STREAM-INF/.test(trimmed) ? 'hls-master' : 'hls-media', body: trimmed };
+      return { ok: true, type: /#EXT-X-STREAM-INF/.test(trimmed) ? 'hls-master' : 'hls-media', body: trimmed, url: current };
     }
     if (/^\s*<(!doctype|html)/i.test(head) || head.indexOf('<html') >= 0) return { ok: false, reason: 'HTML document' };
     var sig = signature(head, ctype);
     if (sig === 'image') return { ok: false, reason: 'image payload' };
-    if (!/\.m3u8(\?|$)/i.test(url) && !/^video\//i.test(ctype) && !/mpegurl/i.test(ctype) &&
+    if (!/\.m3u8(\?|$)/i.test(current) && !/^video\//i.test(ctype) && !/mpegurl/i.test(ctype) &&
         !/audio\//i.test(ctype) && !/octet-stream/i.test(ctype) && sig !== 'iso-media' && sig !== 'mpeg-ts' &&
         sig !== 'webm-or-matroska' && sig !== 'declared-video' && sig !== 'audio') {
       return { ok: false, reason: 'no media signature (' + (ctype || 'no content-type') + ')' };
     }
     if (head.length < 32) return { ok: false, reason: 'empty stream body' };
-    return { ok: true, type: 'file', body: head };
+    return { ok: true, type: 'file', body: head, url: current };
   }
 
   function hlsQualities(masterText, masterUrl, headers) {
@@ -276,7 +314,7 @@
     if (kind === 'download') return null;
     if (/\.(mp4|m3u8)(\?|$)/i.test(playerUrl)) {
       var direct = await probeMedia(playerUrl, { Referer: SITE + '/' }, left(deadline, 4500));
-      if (direct.ok) return { url: playerUrl, headers: { 'User-Agent': UA, Referer: SITE + '/' }, type: direct.type === 'hls-media' || direct.type === 'hls-master' ? 'hls' : 'mp4', probe: direct };
+      if (direct.ok) return { url: direct.url || playerUrl, headers: { 'User-Agent': UA, Referer: SITE + '/' }, type: direct.type === 'hls-media' || direct.type === 'hls-master' ? 'hls' : 'mp4', probe: direct };
       return null;
     }
     var page = await requestText(playerUrl, Object.assign({}, HTML_HDR, { Referer: SITE + '/' }), left(deadline, 7000));
@@ -286,13 +324,14 @@
       var hdr = { 'User-Agent': UA, Referer: playerUrl };
       var p = await probeMedia(mediaUrl, hdr, left(deadline, 4500));
       if (p.ok) {
-        var isHls = /\.m3u8(\?|$)/i.test(mediaUrl) || p.type === 'hls-master' || p.type === 'hls-media';
+        var resolvedMediaUrl = p.url || mediaUrl;
+        var isHls = /\.m3u8(\?|$)/i.test(resolvedMediaUrl) || p.type === 'hls-master' || p.type === 'hls-media';
         return {
-          url: mediaUrl,
+          url: resolvedMediaUrl,
           headers: hdr,
           type: isHls ? 'hls' : 'mp4',
           source: kind,
-          qualities: isHls && p.type === 'hls-master' ? hlsQualities(p.body, mediaUrl, hdr) : [],
+          qualities: isHls && p.type === 'hls-master' ? hlsQualities(p.body, resolvedMediaUrl, hdr) : [],
           probe: p
         };
       }
@@ -474,6 +513,10 @@
 
   /* ----------------------------------------------------------------- details */
 
+  function isExcludedSeason(season) {
+    return /\blive[\s-]*action\b/i.test(clean(season && season.title || ''));
+  }
+
   async function extractDetails(urlOrId) {
     var deadline = now() + 15000;
     var id = idFrom(urlOrId);
@@ -482,9 +525,13 @@
     if (got.status === 404) throw new Error('Franime details: unknown anime id ' + id);
     if (got.status !== 200) throw new Error('Franime details HTTP ' + got.status + ' for id ' + id);
     var a = got.anime;
-    var seasonCount = Array.isArray(a.saisons) ? a.saisons.length : 0;
+    var seasonCount = 0;
     var episodeCount = 0;
-    if (Array.isArray(a.saisons)) for (var i = 0; i < a.saisons.length; i++) episodeCount += (a.saisons[i].episodes || []).length;
+    if (Array.isArray(a.saisons)) for (var i = 0; i < a.saisons.length; i++) {
+      if (isExcludedSeason(a.saisons[i])) continue;
+      seasonCount++;
+      episodeCount += (a.saisons[i].episodes || []).length;
+    }
     var href = seriesHref(a);
     return {
       id: String(a.id),
@@ -514,8 +561,10 @@
   /* ---------------------------------------------------------------- episodes */
 
   function seasonNumber(title, index) {
-    var m = String(title == null ? '' : title).match(/(\d+)/);
-    return m ? Number(m[1]) : index + 1;
+    var all = String(title == null ? '' : title).match(/\d+(?:\.\d+)?/g);
+    if (!all || !all.length) return index + 1;
+    var n = Number(all[all.length - 1]);
+    return isFinite(n) && n > 0 ? n : index + 1;
   }
 
   function episodeTitlesFromSeason(payload) {
@@ -527,6 +576,12 @@
       if (n > 0 && e.title) map[n] = clean(e.title);
     }
     return map;
+  }
+
+  function episodeNumberFromTitle(title) {
+    var m = String(title == null ? '' : title).match(/(\d+(?:\.\d+)?)\s*$/);
+    var n = m ? Number(m[1]) : NaN;
+    return isFinite(n) && n > 0 ? n : null;
   }
 
   async function extractEpisodes(seriesId) {
@@ -541,6 +596,7 @@
     var slug = (seriesHref(anime).match(/\/anime\/([^?]+)/) || [])[1] || 'anime';
     for (var si = 0; si < saisons.length; si++) {
       var s = saisons[si] || {};
+      if (isExcludedSeason(s)) continue;
       var snum = seasonNumber(s.title, si);
       var eps = Array.isArray(s.episodes) ? s.episodes : [];
       var niceTitles = {};
@@ -553,7 +609,7 @@
         var lang = ep.lang || {};
         var vo = !!(lang.vo && Array.isArray(lang.vo.lecteurs) && lang.vo.lecteurs.length);
         var vf = !!(lang.vf && Array.isArray(lang.vf.lecteurs) && lang.vf.lecteurs.length);
-        var num = ei + 1;
+        var num = episodeNumberFromTitle(ep.title) || (ei + 1);
         out.push({
           number: num,
           href: SITE + '/anime/' + slug + '?animeId=' + id + '&sIdx=' + si + '&eIdx=' + ei + '&saison=' + snum + '&ep=' + num,

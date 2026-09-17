@@ -11,13 +11,13 @@ https://raw.githubusercontent.com/kas021/Testing-Modules-1-2-3-4/main/repository
 ```
 
 Settings → Media & Sources → add/import a **repository URL** and paste that line.
-The app downloads `bundle-2`, installs both modules inside it, and links the
+The app downloads `bundle-3`, installs both modules inside it, and links the
 repository so **Check** can offer later versions.
 
 **Option B — import the module ZIP directly** (single module, no repository link):
 
-- [FRAnime Codex 1.0.0-beta.4](https://github.com/kas021/Testing-Modules-1-2-3-4/releases/download/module-franime-v1-v1.0.0-beta.4/FRAnimeCodex-1.0.0-beta.4.zip)
-- [FRAnime Hermes 1.0.0-beta.2](https://github.com/kas021/Testing-Modules-1-2-3-4/releases/download/module-franime-hermes-v1-v1.0.0-beta.2/FRAnimeHermes-1.0.0-beta.2.zip)
+- [FRAnime Codex 1.0.0-beta.5](https://github.com/kas021/Testing-Modules-1-2-3-4/releases/download/module-franime-v1-v1.0.0-beta.5/FRAnimeCodex-1.0.0-beta.5.zip)
+- [FRAnime Hermes 1.0.0-beta.3](https://github.com/kas021/Testing-Modules-1-2-3-4/releases/download/module-franime-hermes-v1-v1.0.0-beta.3/FRAnimeHermes-1.0.0-beta.3.zip)
 
 Download that file and import it under Settings → Media & Sources → the
 module/package import action. Import the **ZIP itself** — not this repository
@@ -27,10 +27,10 @@ archive, not the extracted module folder, and not the bundle.
 
 | Variant | Module ID | Version | Identity number |
 | --- | --- | --- | ---: |
-| FRAnime Codex | `franime-v1` | `1.0.0-beta.4` | 9002 |
-| FRAnime Hermes | `franime-hermes-v1` | `1.0.0-beta.2` | 9003 |
+| FRAnime Codex | `franime-v1` | `1.0.0-beta.5` | 9002 |
+| FRAnime Hermes | `franime-hermes-v1` | `1.0.0-beta.3` | 9003 |
 
-Bundle `2`: [`Testing-Modules-1-2-3-4-Bundle-2.zip`](bundles/Testing-Modules-1-2-3-4-Bundle-2.zip)
+Bundle `3`: [`Testing-Modules-1-2-3-4-Bundle-3.zip`](bundles/Testing-Modules-1-2-3-4-Bundle-3.zip)
 — contains both module ZIPs.
 
 `repository.json` is the index the app reads: bundle and module entries with
@@ -79,6 +79,14 @@ remain separate checks. Read [`modules/FranimeCodex/test-report.md`](modules/Fra
 and [`modules/FranimeHermes/test-report.md`](modules/FranimeHermes/test-report.md)
 for the evidence and limitations. The published release assets are validated
 against the SHA-256 digests in `repository.json`.
+
+The latest beta fixes Flutter response-shape handling, resolves temporary media
+redirects before returning a stream, and filters source seasons explicitly
+marked **Live Action**. This makes One Piece begin at the real anime `S1E1`
+(`sIdx=1`, `eIdx=0`) instead of listing the attached eight-episode live-action
+season first. A provider can still be unavailable for a particular temporary
+link; the module fails closed and does not substitute another episode or
+language.
 
 These are beta community-testing artifacts. Identity numbers 9002 and 9003 are
 test-only compatibility identities, not official catalogue allocations. This
